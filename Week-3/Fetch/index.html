@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="style.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+    <button onClick='getAnimalData()'>Get Animal Data</button>
+
+    <script>
+         async function getAnimalData(){
+            try {
+                const response = await fetch('https://fakerapi.it/api/v1/persons');
+                const data = await response.json();
+                console.log(data);
+                alert('Animal data fetched! Check console for details.');
+            } catch (error) {
+                console.error('Error fetching animal data:', error);
+                alert('Failed to fetch animal data.');
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,30 @@
+<html>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const body = document.body;
+
+            // Clear existing content
+            body.innerHTML = '';
+
+            // Dynamically create and append elements
+            const heading = document.createElement('h1');
+            heading.textContent = 'Dynamic Rendering Example';
+            body.appendChild(heading);
+
+            const paragraph = document.createElement('p');
+            paragraph.textContent = 'This content was added dynamically using JavaScript.';
+            body.appendChild(paragraph);
+
+            const list = document.createElement('ul');
+            const items = ['Item 1', 'Item 2', 'Item 3'];
+            items.forEach(itemText => {
+                const listItem = document.createElement('li');
+                listItem.textContent = itemText;
+                list.appendChild(listItem);
+            });
+            body.appendChild(list);
+        });
+    </script>
+    <body>
+    </body>
+</html>

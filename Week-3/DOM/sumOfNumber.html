@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <input type="text" id="First" placeholder="First number"><br>
+    <input type="text" id="Second" placeholder="Second number"><br>
+    <button onclick="populateDiv()">Calculate Sum</button>
+    <div id="result"></div>
+
+    <script>
+        function populateDiv() {
+            const firstNumber = parseFloat(document.getElementById("First").value);
+            const secondNumber = parseFloat(document.getElementById("Second").value);
+            fetch("http://localhost:3000/sum?a=" + firstNumber + "&b=" + secondNumber)
+                .then(response => response.json())
+                .then(data => {
+                    const element = document.getElementById("result");
+                    element.innerHTML = "Sum: " + data.sum;
+                })
+                .catch(error => {
+                    console.error('Error fetching sum:', error);
+                });
+        }
+    </script>
+</body>
+</html>
