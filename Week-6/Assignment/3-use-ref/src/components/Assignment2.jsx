@@ -9,7 +9,7 @@ export function Assignment2() {
     renderCount.current += 1;
 
     const handleReRender = () => {
-        // Update state to force re-render
+        // Update state to force re-render the component
         forceRender(Math.random());
     };
 
