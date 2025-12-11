@@ -1,5 +1,3 @@
-const JWT_SECRET = "your_jwt_secret_here1";
-
-export default{
-    JWT_SECRET
-};  
+module.exports = {
+    JWT_SECRET: "your_super_secret_key"
+};

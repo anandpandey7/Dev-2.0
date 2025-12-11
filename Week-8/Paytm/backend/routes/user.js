@@ -1,9 +1,10 @@
 const { Router } = require("express");
-const { User } = require("../db");
+const { User, Account } = require("../db");
 const router = Router();
 const jwt = require("jsonwebtoken");
 const zod = require("zod");
 const bcrypt = require("bcrypt");
+const { userMiddleware } = require("../middleware");
 
 // JWT secret should be stored in environment variables
 const { JWT_SECRET } = require("../config");
@@ -49,12 +50,20 @@ router.post("/signup", async (req, res) => {
         });
         await newUser.save();
 
+        // Create an account with initial random balance
+        const newAccount = new Account({
+            userId: newUser._id,
+            balance: 1 + Math.random() * 10000
+        });
+        await newAccount.save();
+
         // Create JWT token
         const token = jwt.sign(
-            { id: newUser._id},
+            { userId: newUser._id },
             JWT_SECRET,
             { expiresIn: "1h" }
         );
+
 
         res.status(201).json({
             message: "User registered successfully",
@@ -67,7 +76,7 @@ router.post("/signup", async (req, res) => {
 });
 
 // ---------------------- LOGIN ----------------------
-router.post("/login", async (req, res) => {
+router.post("/signin", async (req, res) => {
     try {
         const parsed = loginSchema.safeParse(req.body);
 
@@ -92,10 +101,11 @@ router.post("/login", async (req, res) => {
 
         // Generate JWT
         const token = jwt.sign(
-            { id: user._id},
+            { userId: user._id },
             JWT_SECRET,
             { expiresIn: "1h" }
         );
+
 
         res.status(200).json({
             message: "Login successful",
@@ -106,5 +116,67 @@ router.post("/login", async (req, res) => {
         res.status(500).json({ error: "Server error" });
     }
 });
+
+
+const updateBody = zod.object({
+    firstName: zod.string().optional(),
+    lastName: zod.string().optional(),
+    password: zod.string().min(6).optional(),
+});
+
+router.put('/', userMiddleware, async (req, res) => {
+    // 1️⃣ Validate Input
+    const parsed = updateBody.safeParse(req.body);
+    if (!parsed.success) {
+        return res.status(411).json({ message: 'Bad Request: Invalid request body' });
+    }
+
+    try {
+        // 2️⃣ Only update allowed fields (not entire req.body)
+        const updateData = parsed.data;
+
+        // 3️⃣ If password is present, hash it
+        if (updateData.password) {
+            const bcrypt = require('bcrypt');
+            updateData.password = await bcrypt.hash(updateData.password, 10);
+        }
+
+        // 4️⃣ Update user in DB
+        await User.updateOne(
+            { _id: req.userId },
+            { $set: updateData }
+        );
+
+        res.status(200).json({ message: 'User details updated successfully' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
+});
+
+router.get("/bulk", async (req, res) => {
+    const filter = req.query.filter || "";
+
+    const users = await User.find({
+        $or: [{
+            firstName: {
+                "$regex": filter
+            }
+        }, {
+            lastName: {
+                "$regex": filter
+            }
+        }]
+    })
+
+    res.json({
+        user: users.map(user => ({
+            username: user.username,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            _id: user._id
+        }))
+    })
+})
 
 module.exports = router;
