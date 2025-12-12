@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 // connect to MongoDB
 
-
+mongoose.connect('mongodb+srv://adminX:5xe3cOClHACJ4Agu@cluster0.fzbgr1d.mongodb.net/PayTm');
 
 // Create a Schema for Users
 const userSchema = new mongoose.Schema({
