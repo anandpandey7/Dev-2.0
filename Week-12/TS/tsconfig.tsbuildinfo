@@ -1,0 +1,1 @@
+{"root":["./src/example1.ts","./src/index.ts","./src/learn-exclude.ts","./src/learn-map.ts","./src/learn-object.ts","./src/learn-pick.ts","./src/learn-readonly.ts","./src/learn-records.ts"],"errors":true,"version":"5.9.3"}
