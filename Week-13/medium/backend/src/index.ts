@@ -11,6 +11,20 @@ type Bindings = {
 
 const app = new Hono<{ Bindings: Bindings }>()
 
+app.use('api/v1/blog/*', async(c,next)=>{
+  
+  const header = c.req.header("Authorization") || "";
+  const token = header.split(" ")[1];
+  // const token = header.replace("Bearer ", "");
+
+  const response = await verify(token, c.env.JWT_SECRET, "HS256");
+  if (!response) {
+    c.status(401);
+    return c.json({ error: "Unauthorized" });
+  }
+  await next();
+})
+
 app.post('/api/v1/signup', async (c) => {
   // Initialize Prisma inside the fetch handler for Edge environments
   const prisma = new PrismaClient({
