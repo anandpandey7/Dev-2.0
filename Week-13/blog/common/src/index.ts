@@ -20,7 +20,8 @@ export const createBlogInput = z.object({
 export const updateBlogInput = z.object({
     title: z.string(),
     content: z.string(),
-    id: z.string()
+    id: z.string(),
+    published: z.boolean().optional(),
 })
 
 export type SignupInput = z.infer<typeof signupInput>

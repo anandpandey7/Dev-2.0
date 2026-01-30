@@ -1,7 +1,9 @@
+// New Learning const blog = location.state?.blog as FullBlog | undefined;
+
 import { useState, useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { BACKEND_URL } from "../config";
-import { type CreateBlogInput } from "@anandcse/blog-common";
+import { type UpdateBlogInput, updateBlogInput } from "@anandcse/blog-common";
 
 type FullBlog = {
   id: string;
@@ -15,13 +17,13 @@ type FullBlog = {
   };
 };
 
-type EditBlogProps = {
-  blog: FullBlog;
-};
-
-export const EditBlog = ({ blog }: EditBlogProps) => {
+export const EditBlog = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const { id } = useParams();
+  
+  // Get blog from location.state
+  const blog = location.state?.blog as FullBlog | undefined;
 
   const [title, setTitle] = useState(blog?.title || "");
   const [content, setContent] = useState(blog?.content || "");
@@ -38,8 +40,8 @@ export const EditBlog = ({ blog }: EditBlogProps) => {
     e.preventDefault();
     setLoading(true);
 
-    const body = { title, content, published };
-    const parseResult = CreateBlogInput.safeParse(body);
+    const body = { id, title, content, published };
+    const parseResult = updateBlogInput.safeParse(body);
     if (!parseResult.success) {
       alert("Invalid input");
       setLoading(false);
@@ -47,7 +49,7 @@ export const EditBlog = ({ blog }: EditBlogProps) => {
     }
 
     try {
-      const response = await fetch(`${BACKEND_URL}/api/v1/blog/${blog.id}`, {
+      const response = await fetch(`${BACKEND_URL}/api/v1/blog`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -58,7 +60,7 @@ export const EditBlog = ({ blog }: EditBlogProps) => {
 
       if (response.ok) {
         alert("Blog updated successfully!");
-        navigate(`/blog/${blog.id}`);
+        navigate(`/blog/${blog?.id || id}`);
       } else {
         alert("Failed to update the blog.");
       }
@@ -76,7 +78,7 @@ export const EditBlog = ({ blog }: EditBlogProps) => {
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
-      <div className="w-full max-w-2xl bg-white rounded-lg shadow-md p-6">
+      <div className="w-full max-w-2xl bg-white rounded-lg shadow-md p-3 sm:p-6">
         <h1 className="text-2xl font-bold text-gray-900 mb-6">Edit Blog</h1>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
@@ -95,7 +97,7 @@ export const EditBlog = ({ blog }: EditBlogProps) => {
               value={content}
               onChange={(e) => setContent(e.target.value)}
               rows={10}
-              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full p-2 sm:p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               required
             />
           </div>
@@ -115,14 +117,14 @@ export const EditBlog = ({ blog }: EditBlogProps) => {
             <button
               type="submit"
               disabled={loading}
-              className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-3 px-4 rounded-lg font-medium transition-colors disabled:opacity-50"
+              className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-3 px-1 sm:px-4 rounded-lg font-medium transition-colors disabled:opacity-50"
             >
               {loading ? "Updating..." : "Update Blog"}
             </button>
             <button
               type="button"
               onClick={() => navigate(-1)}
-              className="flex-1 bg-gray-600 hover:bg-gray-700 text-white py-3 px-4 rounded-lg font-medium transition-colors"
+              className="flex-1 bg-gray-600 hover:bg-gray-700 text-white py-3 px-1 sm:px-4 rounded-lg font-medium transition-colors"
             >
               Cancel
             </button>

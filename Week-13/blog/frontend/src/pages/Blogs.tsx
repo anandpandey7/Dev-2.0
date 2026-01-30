@@ -33,7 +33,11 @@ export const Blogs = () => {
             content={blog.content}
             authorId={blog.authorId}
             authorName={blog.author.name || "Anonymous"}
-            publishedDate={blog.createdAt}
+            publishedDate={new Date(blog.createdAt).toLocaleDateString('en-US', {
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric',
+            })}
           />
         ))}
 

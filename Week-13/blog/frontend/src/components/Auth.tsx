@@ -5,6 +5,7 @@ import { BACKEND_URL } from "../config";
 import axios from "axios";
 
 export const Auth = ({type}: {type: "signup" | "signin"})=>{
+    const [loading, setLoading] = useState(false);
     const [postInputs, setPostInputs] = useState<SignupInput>({
         name: "",
         email: "",
@@ -14,6 +15,7 @@ export const Auth = ({type}: {type: "signup" | "signin"})=>{
     const navigate = useNavigate();
     async function sendRequest() {
         try{
+            setLoading(true);
             const response = await axios.post(
                 `${BACKEND_URL}/api/v1/user/${type === "signup" ? "signup": "signin"}`,
                 postInputs
@@ -21,7 +23,6 @@ export const Auth = ({type}: {type: "signup" | "signin"})=>{
             const token = response.data.token;
             localStorage.setItem("token", token);
             navigate("/blogs");
-            
         }catch (error: any) {
             if (axios.isAxiosError(error)) {
                 console.error("Auth error:", error.response?.data?.message);
@@ -30,12 +31,14 @@ export const Auth = ({type}: {type: "signup" | "signin"})=>{
                 console.error("Unexpected error:", error);
                 alert("Unexpected error occurred");
             }
+        }finally{
+          setLoading(false);
         }
     }
     return (
     <div className="h-screen flex justify-center flex-col">
       <div className="flex justify-center">
-        <div>
+        <div >
           <div className="px-10">
             <div>
               <div className="text-2xl font-extrabold">Create an account</div>
@@ -84,12 +87,13 @@ export const Auth = ({type}: {type: "signup" | "signin"})=>{
             }}
           />
 
-          <button
+          <button disabled={loading}
             type="button"
             onClick={sendRequest}
-            className="mt-8 w-full text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700"
+            className="mt-8 w-11/12 text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700 mx-3 sm:mx-0"
           >
-            {type === "signup" ? "Sign up" : "Sign in"}
+            {loading && "Please wait..."}
+            {!loading && (type === "signup" ? "Sign up" : "Sign in")}
           </button>
         </div>
       </div>
@@ -107,14 +111,14 @@ interface LabelledInputType{
 function LabelledInput({label, placeholder, onChange, type}: LabelledInputType){
     return (
     <div>
-      <label className="block mb-2 text-sm text-black font-semibold pt-4">
+      <label className="block mb-2 text-sm text-black font-semibold pt-4 mx-3 sm:mx-0">
         {label}
       </label>
       <input
         onChange={onChange}
         type={type || "text"}
         id="first_name"
-        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-11/12 p-2.5 mx-3 sm:mx-0"
         placeholder={placeholder}
         required
       />

@@ -264,6 +264,7 @@ blogRouter.put('/',async(c)=>{
         data: {
             title: bodyData.title,
             content: bodyData.content,
+            published: bodyData.published || false,
         },
         select: {
             id: true,

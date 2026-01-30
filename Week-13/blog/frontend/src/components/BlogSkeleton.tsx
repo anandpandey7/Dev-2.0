@@ -2,7 +2,7 @@ import { Circle } from "./BlogCard";
 
 export const BlogSkeleton = () => {
   return (
-    <div className="border-b border-slate-200 pb-7 w-full max-w-screen-md cursor-pointer">
+    <div className="border-b border-slate-200 pb-7 w-full max-w-screen-md cursor-pointer animate-pulse">
       <div className="flex">
         <div className="pl-2">
           <div className="h-4  bg-gray-200 rounded-full  w-4 mb-4"></div>

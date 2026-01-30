@@ -43,7 +43,7 @@ export const FullBlog = ({ blog }: { blog: Blog | null }) => {
   };
 
   const handleEdit = () => {
-    navigate("/publish"); // Navigate to publish page for editing
+    navigate(`/edit/${blog.id}`, { state: { blog } }); // Pass entire blog object
   };
 
   return (

@@ -4,7 +4,7 @@ import { decode, jwt, sign, verify } from 'hono/jwt';
 import { PrismaClient } from '../../src/generated/prisma/edge'
 import { withAccelerate } from "@prisma/extension-accelerate";
 import {signupInput, signinInput } from '@anandcse/blog-common';
-
+import { authMiddleware } from '../middleware/auth';
 
 type Bindings = {
   DATABASE_URL: string,
@@ -123,3 +123,7 @@ userRouter.post('/signin', async(c)=>{
 //     await prisma.$disconnect()
 //   }
 })
+
+userRouter.get("/verifyToken", authMiddleware, (c) => {
+  return c.json({ success: true });
+});
