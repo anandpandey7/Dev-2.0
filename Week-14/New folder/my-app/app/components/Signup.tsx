@@ -1,8 +1,9 @@
 "use client";
-
+// Note server don't have useState so we can't reomve "use client";
 import { ChangeEvent, useState } from "react";
+import { Button } from "./Button";
 
-export default function Signup() {
+export default function SignupComponent() {
   const [type, setType] = useState<"signup" | "signin">("signup");
   const [loading, setLoading] = useState(false);
 
@@ -12,9 +13,14 @@ export default function Signup() {
     password: "",
   });
 
+  function handler(){
+    console.log('hi there');
+  }
+
   async function sendRequest() {
     setLoading(true);
     console.log(postInputs);
+    // fake delay for now
     setTimeout(() => {
       setLoading(false);
     }, 1000);
@@ -66,15 +72,15 @@ export default function Signup() {
               })
             }
           />
-
-          <button
+            <Button loading={loading} handler={handler} type={type}/>
+          {/* <button
             disabled={loading}
             type="button"
-            onClick={sendRequest}
+            onClick={handler}
             className="mt-8 w-11/12 text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 mx-3 sm:mx-0"
           >
             {loading ? "Please wait..." : type === "signup" ? "Sign up" : "Sign in"}
-          </button>
+          </button> */}
         </div>
       </div>
     </div>
