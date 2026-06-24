@@ -3,4 +3,4 @@ export interface Todo {
     description: string,
     id: string,
     done: boolean,
-}
+} // model
