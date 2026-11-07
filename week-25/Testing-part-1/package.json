@@ -1,0 +1,19 @@
+{
+  "name": "testing-part-1",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "devDependencies": {
+    "@jest/globals": "^30.5.2",
+    "@types/jest": "^30.0.0",
+    "ts-jest": "^29.4.15",
+    "typescript": "^5.9.3"
+  }
+}
