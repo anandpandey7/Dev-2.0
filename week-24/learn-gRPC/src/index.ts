@@ -4,6 +4,7 @@ import { dirname, join } from 'node:path';
 import * as grpc from '@grpc/grpc-js';
 import type { GrpcObject, ServiceClientConstructor } from "@grpc/grpc-js"
 import * as protoLoader from '@grpc/proto-loader';
+import { Status } from '@grpc/grpc-js/build/src/constants.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);  
@@ -42,7 +43,12 @@ function GetPersonByName(call, callback){
     const person = PERSONS.find(p => p.name == call.request.name);
     if(person){
         callback(null, person);
-    }   
+    } else {
+        callback({
+            code: Status.NOT_FOUND,
+            details: "not found"
+        }, null);
+    }  
 }
 
 const server = new grpc.Server();
